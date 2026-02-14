@@ -25,6 +25,8 @@ Cansado de salvar páginas da web uma por uma? O **RapidPDF** é sua ferramenta 
 ### ✨ O que ele faz?
 
 - **Multitarefa**: Passou 1, 2 ou 10 URLs? Ele engole tudo.
+- **Modo Servidor**: Rode sem argumentos e ele vira uma API REST pronta para o combate. 🛡️
+- **Documentado**: Swagger UI incluído de fábrica. 🎩
 - **Inteligente**: Usa o motor do Chrome (via `chromedp`) para garantir que o PDF fique igualzinho ao site.
 - **Organizado**: Junta (merge) todas as páginas em um arquivo `output.pdf` final.
 - **Seguro**: Valida suas URLs para você não digitar besteira.
@@ -32,32 +34,38 @@ Cansado de salvar páginas da web uma por uma? O **RapidPDF** é sua ferramenta 
 
 ### 🚀 Bora rodar
 
-1.  **Instale as dependências** (certifique-se de ter o Go instalado):
+#### 1. Modo CLI (Clássico)
 
-    ```bash
-    go mod download
-    ```
+Mande as URLs e veja a mágica acontecer:
 
-2.  **Configure o ambiente**:
-    Crie um arquivo `.env` (se não tiver) e defina o limite de URLs:
+```bash
+go run main.go https://go.dev https://google.com
+```
 
-    ```env
-    MAX_URLS=10
-    ```
+_Boom!_ 💥 Veja o arquivo `output.pdf` aparecer na sua pasta.
 
-3.  **Execute a mágica**:
+#### 2. Modo Servidor (API Power)
 
-    ```bash
-    go run main.go https://go.dev https://google.com
-    ```
+Rode sem argumentos para subir o servidor:
 
-    _Boom!_ 💥 Veja o arquivo `output.pdf` aparecer na sua pasta.
+```bash
+go run main.go
+# 🚀 RapidPDF — Web-to-PDF Converter
+# 📡 Server listening on :8080
+```
+
+Agora você tem superpoderes:
+
+- **Gerar PDF**: `POST /generate` com JSON `{"urls": ["..."]}`
+- **Documentação**: Acesse [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) e brinque com a API.
 
 ### 🛠️ Tecnologias (O Motor)
 
 Debaixo do capô, temos monstros sagrados do ecossistema Go:
 
 - 🐹 **Go**: Porque gostamos de velocidade.
+- 🍸 **Gin**: O framework web mais rápido do oeste.
+- 📜 **Swagger**: Documentação automática para ninguém ficar perdido.
 - 🌐 **Chromedp**: Para renderizar as páginas com precisão cirúrgica.
 - 📄 **pdfcpu**: Para colar os PDFs uns nos outros sem usar cola tenaz.
 - 📝 **godotenv**: Porque hardcoded config é coisa do passado.
@@ -68,13 +76,15 @@ Debaixo do capô, temos monstros sagrados do ecossistema Go:
 
 ### 🤔 What is this?
 
-Tired of saving web pages one by one? **RapidPDF** is your magical CLI (Command Line Interface) tool that takes a bunch of links, renders them just like a real browser (thanks, Chrome! 🤖), and stitches them all together into a single, beautiful PDF file.
+Tired of saving web pages one by one? **RapidPDF** is your magical tool that takes a bunch of links, renders them just like a real browser (thanks, Chrome! 🤖), and stitches them all together into a single, beautiful PDF file.
 
-It's like a sticker album for the internet, but actually useful.
+Run it as a CLI or start it as a REST API server. You choose!
 
 ### ✨ What does it do?
 
 - **Multitasking**: 1, 2, or 10 URLs? It eats them for breakfast.
+- **Server Mode**: Run without args to start a robust REST API. 🛡️
+- **Documented**: Swagger UI included out of the box. 🎩
 - **Smart**: Uses the Chrome engine (via `chromedp`) to ensure the PDF looks exactly like the website.
 - **Organized**: Merges everything into a final `output.pdf` file.
 - **Safe**: Validates your URLs so you don't type nonsense.
@@ -82,32 +92,38 @@ It's like a sticker album for the internet, but actually useful.
 
 ### 🚀 Let's run it
 
-1.  **Install dependencies** (make sure you have Go installed):
+#### 1. CLI Mode (Classic)
 
-    ```bash
-    go mod download
-    ```
+Feed it URLs and watch it fly:
 
-2.  **Configure the environment**:
-    Create a `.env` file (if you don't have one) and set the URL limit:
+```bash
+go run main.go https://go.dev https://google.com
+```
 
-    ```env
-    MAX_URLS=10
-    ```
+_Boom!_ 💥 Watch the `output.pdf` file appear in your folder.
 
-3.  **Do the magic**:
+#### 2. Server Mode (API Power)
 
-    ```bash
-    go run main.go https://go.dev https://google.com
-    ```
+Run without arguments to launch the server:
 
-    _Boom!_ 💥 Watch the `output.pdf` file appear in your folder.
+```bash
+go run main.go
+# 🚀 RapidPDF — Web-to-PDF Converter
+# 📡 Server listening on :8080
+```
+
+Now you have superpowers:
+
+- **Generate PDF**: `POST /generate` with JSON `{"urls": ["..."]}`
+- **Documentation**: Go to [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) and play with the API.
 
 ### 🛠️ Tech Stack (The Engine)
 
 Under the hood, we have some heavy hitters from the Go ecosystem:
 
 - 🐹 **Go**: Because we like speed.
+- 🍸 **Gin**: The fastest web framework in the wild west.
+- 📜 **Swagger**: Automatic docs so you never get lost.
 - 🌐 **Chromedp**: To render pages with surgical precision.
 - 📄 **pdfcpu**: To glue PDFs together without using actual glue.
 - 📝 **godotenv**: Because hardcoded config is so last season.

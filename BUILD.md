@@ -43,6 +43,15 @@ Antes de começar a brincadeira, você precisa ter:
 
 Quer criar um executável para levar pra casa?
 
+**Passo 0: Gere a documentação (Swagger)**
+Se você mexeu na API, rode isso antes ou o compilador vai chorar:
+
+```bash
+swag init
+```
+
+**Passo 1: Compile**
+
 **Linux / macOS:**
 
 ```bash
@@ -59,20 +68,18 @@ Pronto! Agora você tem um binário fresquinho na pasta.
 
 ### 🚀 Decolando (Execução)
 
-**Modo "Tô com pressa" (Dev):**
+**Modo "API Server" (Padrão):**
 
 ```bash
-go run main.go https://exemplo.com.br
+# Roda na porta 8080
+./rapid_pdf
 ```
 
-**Modo "Profissional" (Binário):**
+**Modo "CLI One-Shot" (Clássico):**
 
 ```bash
-# Linux/Mac
+# Converte e sai
 ./rapid_pdf https://exemplo.com.br
-
-# Windows
-.\rapid_pdf.exe https://exemplo.com.br
 ```
 
 ### ⚙️ Ajustes Finos (Configuração)
@@ -106,6 +113,7 @@ go test -v ./...
 | `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.          |
 | `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT` ou checa o Wi-Fi. |
 | `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.       |
+| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!      |
 
 ---
 
@@ -119,6 +127,7 @@ Before joining the party, make sure you have:
   - [Download Go](https://go.dev/dl/)
 - **Google Chrome** (or Chromium): The engine of our Ferrari.
   - The app tries to find it automagically.
+- **Swag CLI**: For generating docs. `go install github.com/swaggo/swag/cmd/swag@latest`.
 - **Git**: To get the code painlessly.
 
 ### 🛠️ Flash Installation
@@ -139,6 +148,15 @@ Before joining the party, make sure you have:
 
 Want a standalone executable to take home?
 
+**Step 0: Generate Docs**
+Don't skip this or the build will fail:
+
+```bash
+swag init
+```
+
+**Step 1: Compile**
+
 **Linux / macOS:**
 
 ```bash
@@ -155,20 +173,18 @@ Done! You now have a fresh binary in your folder.
 
 ### 🚀 Liftoff (Running)
 
-**"I'm in a hurry" Mode (Dev):**
+**"API Server" Mode (Default):**
 
 ```bash
-go run main.go https://example.com
+# Listens on :8080
+./rapid_pdf
 ```
 
-**"Pro" Mode (Binary):**
+**"CLI One-Shot" Mode (Classic):**
 
 ```bash
-# Linux/Mac
+# Converts and exits
 ./rapid_pdf https://example.com
-
-# Windows
-.\rapid_pdf.exe https://example.com
 ```
 
 ### ⚙️ Fine Tuning (Configuration)

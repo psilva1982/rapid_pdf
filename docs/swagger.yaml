@@ -1,0 +1,61 @@
+basePath: /
+definitions:
+  api.GenerateRequest:
+    properties:
+      urls:
+        items:
+          type: string
+        minItems: 1
+        type: array
+    required:
+    - urls
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Efficient Web-to-PDF Converter API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: RapidPDF API
+  version: "1.0"
+paths:
+  /generate:
+    post:
+      consumes:
+      - application/json
+      description: Converts a list of URLs to PDF and merges them into a single document.
+      parameters:
+      - description: List of URLs to convert
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.GenerateRequest'
+      produces:
+      - application/pdf
+      responses:
+        "200":
+          description: document.pdf
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Generate PDF from URLs
+      tags:
+      - pdf
+swagger: "2.0"
