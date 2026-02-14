@@ -55,18 +55,21 @@ func main() {
 	// Check if running in CLI mode (arguments provided) or Server mode (no arguments)
 	args := os.Args[1:]
 	if len(args) == 0 {
-		runServer()
+		runServer(cfg)
 	} else {
 		runCLI(cfg, args)
 	}
 }
 
-func runServer() {
+func runServer(cfg *config.Config) {
 	slog.Info("Starting server mode on :8080")
+
+	// Initialize API handler with configuration
+	handler := api.NewHandler(cfg)
 
 	r := gin.Default()
 
-	r.POST("/generate", api.GeneratePDF)
+	r.POST("/generate", handler.GeneratePDF)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := r.Run(":8080"); err != nil {
@@ -110,7 +113,8 @@ func runCLI(cfg *config.Config, urls []string) {
 	fmt.Printf("📄 Converting %d %s to PDF...\n", len(urls), pluralize(len(urls), "page", "pages"))
 	fmt.Println(strings.Repeat("─", 50))
 
-	pdfFiles, err := converter.ConvertAll(ctx, urls)
+	timeout := time.Duration(cfg.TimeoutSeconds) * time.Second
+	pdfFiles, err := converter.ConvertAll(ctx, urls, timeout)
 	if err != nil {
 		slog.Error("conversion failed", "error", err)
 		merger.Cleanup(pdfFiles) // Clean up any partial results.

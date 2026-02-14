@@ -8,11 +8,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const defaultMaxURLs = 10
+const (
+	defaultMaxURLs       = 10
+	defaultTimeoutSeconds = 60
+)
 
 // Config holds the application configuration.
 type Config struct {
-	MaxURLs int
+	MaxURLs        int
+	TimeoutSeconds int
 }
 
 // Load reads the .env file and returns a Config with validated values.
@@ -23,6 +27,7 @@ func Load() (*Config, error) {
 	}
 
 	maxURLs := defaultMaxURLs
+	timeoutSeconds := defaultTimeoutSeconds
 
 	if v := os.Getenv("MAX_URLS"); v != "" {
 		parsed, err := strconv.Atoi(v)
@@ -35,5 +40,19 @@ func Load() (*Config, error) {
 		maxURLs = parsed
 	}
 
-	return &Config{MaxURLs: maxURLs}, nil
+	if v := os.Getenv("TIMEOUT_SECONDS"); v != "" {
+		parsed, err := strconv.Atoi(v)
+		if err != nil {
+			return nil, fmt.Errorf("TIMEOUT_SECONDS must be a valid integer: %w", err)
+		}
+		if parsed < 1 {
+			return nil, fmt.Errorf("TIMEOUT_SECONDS must be at least 1, got %d", parsed)
+		}
+		timeoutSeconds = parsed
+	}
+
+	return &Config{
+		MaxURLs:        maxURLs,
+		TimeoutSeconds: timeoutSeconds,
+	}, nil
 }

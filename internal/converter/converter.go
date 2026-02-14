@@ -14,11 +14,11 @@ import (
 
 // ConvertURLToPDF navigates to the given URL using a headless Chrome browser,
 // waits for the page to fully load, and saves the rendered page as a PDF.
-func ConvertURLToPDF(ctx context.Context, url, outputPath string) error {
+func ConvertURLToPDF(ctx context.Context, url, outputPath string, timeout time.Duration) error {
 	slog.Info("converting URL to PDF", "url", url, "output", outputPath)
 
 	// Create a timeout context for this individual page conversion.
-	taskCtx, cancel := context.WithTimeout(ctx, 60*time.Second)
+	taskCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 
 	var buf []byte
@@ -64,7 +64,7 @@ func ConvertURLToPDF(ctx context.Context, url, outputPath string) error {
 // ConvertAll processes a slice of URLs and generates a temporary PDF file for
 // each one. It returns the list of generated PDF file paths. The caller is
 // responsible for cleaning up the temporary files.
-func ConvertAll(ctx context.Context, urls []string) ([]string, error) {
+func ConvertAll(ctx context.Context, urls []string, timeout time.Duration) ([]string, error) {
 	// Create a temporary directory for intermediate PDFs.
 	tmpDir, err := os.MkdirTemp("", "rapid_pdf_*")
 	if err != nil {
@@ -91,7 +91,7 @@ func ConvertAll(ctx context.Context, urls []string) ([]string, error) {
 
 		outputPath := filepath.Join(tmpDir, fmt.Sprintf("page_%03d.pdf", i+1))
 
-		if err := ConvertURLToPDF(taskCtx, url, outputPath); err != nil {
+		if err := ConvertURLToPDF(taskCtx, url, outputPath, timeout); err != nil {
 			taskCancel()
 			slog.Error("failed to convert URL", "url", url, "error", err)
 			return pdfPaths, fmt.Errorf("error on URL #%d (%s): %w", i+1, url, err)

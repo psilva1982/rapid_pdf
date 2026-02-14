@@ -5,11 +5,23 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/psilva1982/rapid_pdf/internal/config"
 	"github.com/psilva1982/rapid_pdf/internal/converter"
 	"github.com/psilva1982/rapid_pdf/internal/merger"
 )
+
+// Handler holds the dependencies for the API handlers.
+type Handler struct {
+	Config *config.Config
+}
+
+// NewHandler creates a new Handler with the given configuration.
+func NewHandler(cfg *config.Config) *Handler {
+	return &Handler{Config: cfg}
+}
 
 // GenerateRequest defines the expected JSON body for PDF generation.
 type GenerateRequest struct {
@@ -30,7 +42,7 @@ type GenerateRequest struct {
 // @Failure      400 {object} map[string]string "Bad Request"
 // @Failure      500 {object} map[string]string "Internal Server Error"
 // @Router       /generate [post]
-func GeneratePDF(c *gin.Context) {
+func (h *Handler) GeneratePDF(c *gin.Context) {
 	var req GenerateRequest
 
 	// bind the JSON body to the struct
@@ -39,12 +51,17 @@ func GeneratePDF(c *gin.Context) {
 		return
 	}
 
-	// Validate URLs (basic check, could be improved)
+	// Validate URLs
 	for _, u := range req.URLs {
 		if u == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "empty URL provided"})
 			return
 		}
+	}
+
+	if len(req.URLs) > h.Config.MaxURLs {
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("too many URLs provided, max is %d", h.Config.MaxURLs)})
+		return
 	}
 
 	slog.Info("received generate request", "url_count", len(req.URLs))
@@ -67,7 +84,8 @@ func GeneratePDF(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	// 1. Convert all URLs to individual PDFs
-	pdfFiles, err := converter.ConvertAll(ctx, req.URLs)
+	timeout := time.Duration(h.Config.TimeoutSeconds) * time.Second
+	pdfFiles, err := converter.ConvertAll(ctx, req.URLs, timeout)
 	if err != nil {
 		slog.Error("conversion failed", "error", err)
 		// Cleanup any partial files
