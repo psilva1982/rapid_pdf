@@ -86,16 +86,16 @@ Pronto! Agora você tem um binário fresquinho na pasta.
 
 Crie um arquivo `.env` e mande ver nas configs:
 
-| Variável   | O que faz?                                       | Padrão |
-| :--------- | :----------------------------------------------- | :----- |
-| `MAX_URLS` | Quantos sites você aguenta converter de uma vez? | `10`   |
-| `TIMEOUT`  | Tempo (em seg) antes de desistir se a net cair.  | `30`   |
+| Variável          | O que faz?                                       | Padrão |
+| :---------------- | :----------------------------------------------- | :----- |
+| `MAX_URLS`        | Quantos sites você aguenta converter de uma vez? | `10`   |
+| `TIMEOUT_SECONDS` | Tempo (em seg) antes de desistir se a net cair.  | `60`   |
 
 **Exemplo `.env`**:
 
 ```env
 MAX_URLS=42
-TIMEOUT=60
+TIMEOUT_SECONDS=60
 ```
 
 ### 🧪 Testando Tudo
@@ -108,12 +108,12 @@ go test -v ./...
 
 ### ❌ Deu Ruim? (Troubleshooting)
 
-| Problema                    | Possível Causa    | Solução                               |
-| :-------------------------- | :---------------- | :------------------------------------ |
-| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.          |
-| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT` ou checa o Wi-Fi. |
-| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.       |
-| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!      |
+| Problema                    | Possível Causa    | Solução                                       |
+| :-------------------------- | :---------------- | :-------------------------------------------- |
+| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.                  |
+| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT_SECONDS` ou checa o Wi-Fi. |
+| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.               |
+| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!              |
 
 ---
 
@@ -191,16 +191,16 @@ Done! You now have a fresh binary in your folder.
 
 Create a `.env` file and tweak the settings:
 
-| Variable   | What does it do?                                 | Default |
-| :--------- | :----------------------------------------------- | :------ |
-| `MAX_URLS` | How many sites can you handle at once?           | `10`    |
-| `TIMEOUT`  | Time (in sec) before giving up if the net fails. | `30`    |
+| Variable          | What does it do?                                 | Default |
+| :---------------- | :----------------------------------------------- | :------ |
+| `MAX_URLS`        | How many sites can you handle at once?           | `10`    |
+| `TIMEOUT_SECONDS` | Time (in sec) before giving up if the net fails. | `60`    |
 
 **Example `.env`**:
 
 ```env
 MAX_URLS=42
-TIMEOUT=60
+TIMEOUT_SECONDS=60
 ```
 
 ### 🧪 Testing Everything
@@ -213,11 +213,11 @@ go test -v ./...
 
 ### ❌ Oops? (Troubleshooting)
 
-| Issue                       | Possible Cause      | Solution                           |
-| :-------------------------- | :------------------ | :--------------------------------- |
-| `executable file not found` | Where is Chrome?    | Install Chrome, boss.              |
-| `context deadline exceeded` | Dial-up internet?   | Increase `TIMEOUT` or check Wi-Fi. |
-| `too many URLs`             | Easy there, cowboy! | Increase `MAX_URLS` in `.env`.     |
+| Issue                       | Possible Cause      | Solution                                   |
+| :-------------------------- | :------------------ | :----------------------------------------- |
+| `executable file not found` | Where is Chrome?    | Install Chrome, boss.                      |
+| `context deadline exceeded` | Dial-up internet?   | Increase `TIMEOUT_SECONDS` or check Wi-Fi. |
+| `too many URLs`             | Easy there, cowboy! | Increase `MAX_URLS` in `.env`.             |
 
 ---
 
