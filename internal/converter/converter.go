@@ -79,6 +79,8 @@ func ConvertAll(ctx context.Context, urls []string, timeout time.Duration) ([]st
 			chromedp.Flag("disable-gpu", true),
 			chromedp.Flag("no-sandbox", true),
 			chromedp.Flag("disable-dev-shm-usage", true),
+			// Fix for net::ERR_HTTP2_PROTOCOL_ERROR on large pages
+			chromedp.Flag("disable-http2", true),
 		)...,
 	)
 	defer allocCancel()
