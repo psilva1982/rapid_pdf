@@ -84,18 +84,34 @@ Pronto! Agora você tem um binário fresquinho na pasta.
 
 ### ⚙️ Ajustes Finos (Configuração)
 
-Crie um arquivo `.env` e mande ver nas configs:
+Crie um arquivo `.env` e mande ver nas configs. Agora com suporte a **AWS S3**!
 
-| Variável          | O que faz?                                       | Padrão |
-| :---------------- | :----------------------------------------------- | :----- |
-| `MAX_URLS`        | Quantos sites você aguenta converter de uma vez? | `10`   |
-| `TIMEOUT_SECONDS` | Tempo (em seg) antes de desistir se a net cair.  | `60`   |
+| Variável            | O que faz?                                       | Padrão  |
+| :------------------ | :----------------------------------------------- | :------ |
+| `MAX_URLS`          | Quantos sites você aguenta converter de uma vez? | `10`    |
+| `TIMEOUT_SECONDS`   | Tempo (em seg) antes de desistir se a net cair.  | `60`    |
+| `AWS_S3_BUCKET`     | Nome do Bucket no S3 (pra quem manda pra nuvem). | _Local_ |
+| `AWS_S3_REGION`     | Região da AWS (tipo `us-east-1`).                | _Local_ |
+| `AWS_S3_ACCESS_KEY` | Chave de acesso (shhh, segredo).                 | _Local_ |
+| `AWS_S3_SECRET_KEY` | Chave secreta (não poste no Instagram).          | _Local_ |
 
-**Exemplo `.env`**:
+**Exemplo `.env` (Modo Nuvem ☁️)**:
 
 ```env
 MAX_URLS=42
 TIMEOUT_SECONDS=60
+AWS_S3_BUCKET=meu-bucket-super-secreto
+AWS_S3_REGION=us-east-1
+AWS_S3_ACCESS_KEY=AKIA...
+AWS_S3_SECRET_KEY=ABC123...
+```
+
+**Exemplo `.env` (Modo Local 🏠)**:
+
+```env
+MAX_URLS=10
+TIMEOUT_SECONDS=60
+# Deixe as vars da AWS comentadas ou vazias!
 ```
 
 ### 🧪 Testando Tudo
@@ -108,12 +124,13 @@ go test -v ./...
 
 ### ❌ Deu Ruim? (Troubleshooting)
 
-| Problema                    | Possível Causa    | Solução                                       |
-| :-------------------------- | :---------------- | :-------------------------------------------- |
-| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.                  |
-| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT_SECONDS` ou checa o Wi-Fi. |
-| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.               |
-| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!              |
+| Problema                    | Possível Causa    | Solução                                        |
+| :-------------------------- | :---------------- | :--------------------------------------------- |
+| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.                   |
+| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT_SECONDS` ou checa o Wi-Fi.  |
+| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.                |
+| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!               |
+| `failed to upload to S3`    | Credenciais fake? | Checa se as chaves AWS estão certas no `.env`. |
 
 ---
 
@@ -189,18 +206,34 @@ Done! You now have a fresh binary in your folder.
 
 ### ⚙️ Fine Tuning (Configuration)
 
-Create a `.env` file and tweak the settings:
+Create a `.env` file and tweak the settings. Now with **AWS S3** support!
 
-| Variable          | What does it do?                                 | Default |
-| :---------------- | :----------------------------------------------- | :------ |
-| `MAX_URLS`        | How many sites can you handle at once?           | `10`    |
-| `TIMEOUT_SECONDS` | Time (in sec) before giving up if the net fails. | `60`    |
+| Variable            | What does it do?                                 | Default |
+| :------------------ | :----------------------------------------------- | :------ |
+| `MAX_URLS`          | How many sites can you handle at once?           | `10`    |
+| `TIMEOUT_SECONDS`   | Time (in sec) before giving up if the net fails. | `60`    |
+| `AWS_S3_BUCKET`     | S3 Bucket name (for cloud riders).               | _Local_ |
+| `AWS_S3_REGION`     | AWS Region (e.g. `us-east-1`).                   | _Local_ |
+| `AWS_S3_ACCESS_KEY` | Access Key (shhh, it's a secret).                | _Local_ |
+| `AWS_S3_SECRET_KEY` | Secret Key (don't post on Instagram).            | _Local_ |
 
-**Example `.env`**:
+**Example `.env` (Cloud Mode ☁️)**:
 
 ```env
 MAX_URLS=42
 TIMEOUT_SECONDS=60
+AWS_S3_BUCKET=my-super-secret-bucket
+AWS_S3_REGION=us-east-1
+AWS_S3_ACCESS_KEY=AKIA...
+AWS_S3_SECRET_KEY=ABC123...
+```
+
+**Example `.env` (Local Mode 🏠)**:
+
+```env
+MAX_URLS=10
+TIMEOUT_SECONDS=60
+# Leave AWS vars commented out or empty!
 ```
 
 ### 🧪 Testing Everything
@@ -218,6 +251,8 @@ go test -v ./...
 | `executable file not found` | Where is Chrome?    | Install Chrome, boss.                      |
 | `context deadline exceeded` | Dial-up internet?   | Increase `TIMEOUT_SECONDS` or check Wi-Fi. |
 | `too many URLs`             | Easy there, cowboy! | Increase `MAX_URLS` in `.env`.             |
+| `docs package not found`    | Forgot swag?        | Run `swag init` before build!              |
+| `failed to upload to S3`    | Fake credentials?   | Double-check your AWS keys in `.env`.      |
 
 ---
 

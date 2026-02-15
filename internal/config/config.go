@@ -17,6 +17,17 @@ const (
 type Config struct {
 	MaxURLs        int
 	TimeoutSeconds int
+
+	// S3 storage configuration (optional — if empty, files are saved locally).
+	S3Bucket    string
+	S3Region    string
+	S3AccessKey string
+	S3SecretKey string
+}
+
+// IsS3Configured returns true when all required S3 environment variables are set.
+func (c *Config) IsS3Configured() bool {
+	return c.S3Bucket != "" && c.S3Region != "" && c.S3AccessKey != "" && c.S3SecretKey != ""
 }
 
 // Load reads the .env file and returns a Config with validated values.
@@ -54,5 +65,9 @@ func Load() (*Config, error) {
 	return &Config{
 		MaxURLs:        maxURLs,
 		TimeoutSeconds: timeoutSeconds,
+		S3Bucket:       os.Getenv("AWS_S3_BUCKET"),
+		S3Region:       os.Getenv("AWS_S3_REGION"),
+		S3AccessKey:    os.Getenv("AWS_S3_ACCESS_KEY"),
+		S3SecretKey:    os.Getenv("AWS_S3_SECRET_KEY"),
 	}, nil
 }

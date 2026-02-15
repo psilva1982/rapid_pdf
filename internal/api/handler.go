@@ -11,16 +11,21 @@ import (
 	"github.com/psilva1982/rapid_pdf/internal/config"
 	"github.com/psilva1982/rapid_pdf/internal/converter"
 	"github.com/psilva1982/rapid_pdf/internal/merger"
+	"github.com/psilva1982/rapid_pdf/internal/storage"
 )
 
 // Handler holds the dependencies for the API handlers.
 type Handler struct {
-	Config *config.Config
+	Config  *config.Config
+	Storage storage.Storage
 }
 
-// NewHandler creates a new Handler with the given configuration.
-func NewHandler(cfg *config.Config) *Handler {
-	return &Handler{Config: cfg}
+// NewHandler creates a new Handler with the given configuration and storage backend.
+func NewHandler(cfg *config.Config, store storage.Storage) *Handler {
+	return &Handler{
+		Config:  cfg,
+		Storage: store,
+	}
 }
 
 // GenerateRequest defines the expected JSON body for PDF generation.
@@ -28,17 +33,23 @@ type GenerateRequest struct {
 	URLs []string `json:"urls" binding:"required,min=1"`
 }
 
+// GenerateResponse defines the JSON response returned after PDF generation.
+type GenerateResponse struct {
+	URL string `json:"url"`
+}
+
 // GeneratePDF handles the PDF generation request.
 // It accepts a JSON body with a list of URLs, converts them concurrently,
-// merges the results, and streams the final PDF back to the client.
+// merges the results, saves the PDF using the configured storage backend,
+// and returns the file URL.
 //
 // @Summary      Generate PDF from URLs
-// @Description  Converts a list of URLs to PDF and merges them into a single document.
+// @Description  Converts a list of URLs to PDF, merges them, and saves to storage (S3 or local).
 // @Tags         pdf
 // @Accept       json
-// @Produce      application/pdf
+// @Produce      json
 // @Param        request body GenerateRequest true "List of URLs to convert"
-// @Success      200 {file} file "document.pdf"
+// @Success      200 {object} GenerateResponse "URL of the generated PDF"
 // @Failure      400 {object} map[string]string "Bad Request"
 // @Failure      500 {object} map[string]string "Internal Server Error"
 // @Router       /generate [post]
@@ -104,6 +115,21 @@ func (h *Handler) GeneratePDF(c *gin.Context) {
 		return
 	}
 
-	// 3. Stream the file back to the client
-	c.FileAttachment(outputPath, "document.pdf")
+	// 3. Read the merged PDF and save it using the configured storage backend
+	data, err := os.ReadFile(outputPath)
+	if err != nil {
+		slog.Error("failed to read merged PDF", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "internal server error"})
+		return
+	}
+
+	fileURL, err := h.Storage.Save(ctx, "document.pdf", data)
+	if err != nil {
+		slog.Error("failed to save PDF to storage", "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("storage failed: %v", err)})
+		return
+	}
+
+	// 4. Return the URL where the PDF can be accessed
+	c.JSON(http.StatusOK, GenerateResponse{URL: fileURL})
 }

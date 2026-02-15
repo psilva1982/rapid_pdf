@@ -15,6 +15,7 @@ import (
 	"github.com/psilva1982/rapid_pdf/internal/config"
 	"github.com/psilva1982/rapid_pdf/internal/converter"
 	"github.com/psilva1982/rapid_pdf/internal/merger"
+	"github.com/psilva1982/rapid_pdf/internal/storage"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -64,10 +65,22 @@ func main() {
 func runServer(cfg *config.Config) {
 	slog.Info("Starting server mode on :8080")
 
-	// Initialize API handler with configuration
-	handler := api.NewHandler(cfg)
+	// Initialize storage backend (S3 or local based on config).
+	store, err := storage.New(cfg)
+	if err != nil {
+		slog.Error("failed to initialize storage", "error", err)
+		os.Exit(1)
+	}
+
+	// Initialize API handler with configuration and storage.
+	handler := api.NewHandler(cfg, store)
 
 	r := gin.Default()
+
+	// Serve local media files when using local storage.
+	if !cfg.IsS3Configured() {
+		r.Static("/media", "./media")
+	}
 
 	r.POST("/generate", handler.GeneratePDF)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
