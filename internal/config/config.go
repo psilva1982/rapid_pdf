@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultMaxURLs       = 10
+	defaultMaxURLs        = 10
 	defaultTimeoutSeconds = 60
 )
 
@@ -17,6 +17,7 @@ const (
 type Config struct {
 	MaxURLs        int
 	TimeoutSeconds int
+	Port           string
 
 	// S3 storage configuration (optional — if empty, files are saved locally).
 	S3Bucket    string
@@ -39,6 +40,10 @@ func Load() (*Config, error) {
 
 	maxURLs := defaultMaxURLs
 	timeoutSeconds := defaultTimeoutSeconds
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
 	if v := os.Getenv("MAX_URLS"); v != "" {
 		parsed, err := strconv.Atoi(v)
@@ -65,6 +70,7 @@ func Load() (*Config, error) {
 	return &Config{
 		MaxURLs:        maxURLs,
 		TimeoutSeconds: timeoutSeconds,
+		Port:           port,
 		S3Bucket:       os.Getenv("AWS_S3_BUCKET"),
 		S3Region:       os.Getenv("AWS_S3_REGION"),
 		S3AccessKey:    os.Getenv("AWS_S3_ACCESS_KEY"),

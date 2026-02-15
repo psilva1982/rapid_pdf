@@ -63,7 +63,7 @@ func main() {
 }
 
 func runServer(cfg *config.Config) {
-	slog.Info("Starting server mode on :8080")
+	slog.Info("Starting server mode", "port", cfg.Port)
 
 	// Initialize storage backend (S3 or local based on config).
 	store, err := storage.New(cfg)
@@ -85,7 +85,7 @@ func runServer(cfg *config.Config) {
 	r.POST("/generate", handler.GeneratePDF)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	if err := r.Run(":8080"); err != nil {
+	if err := r.Run(":" + cfg.Port); err != nil {
 		slog.Error("server failed to start", "error", err)
 		os.Exit(1)
 	}

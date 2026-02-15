@@ -84,10 +84,11 @@ Pronto! Agora você tem um binário fresquinho na pasta.
 
 ### ⚙️ Ajustes Finos (Configuração)
 
-Crie um arquivo `.env` e mande ver nas configs. Agora com suporte a **AWS S3**!
+Crie um arquivo `.env` e mande ver nas configs. Agora com suporte a **AWS S3** e Porta!
 
 | Variável            | O que faz?                                       | Padrão  |
 | :------------------ | :----------------------------------------------- | :------ |
+| `PORT`              | Porta onde o servidor vai rodar.                 | `8080`  |
 | `MAX_URLS`          | Quantos sites você aguenta converter de uma vez? | `10`    |
 | `TIMEOUT_SECONDS`   | Tempo (em seg) antes de desistir se a net cair.  | `60`    |
 | `AWS_S3_BUCKET`     | Nome do Bucket no S3 (pra quem manda pra nuvem). | _Local_ |
@@ -98,6 +99,7 @@ Crie um arquivo `.env` e mande ver nas configs. Agora com suporte a **AWS S3**!
 **Exemplo `.env` (Modo Nuvem ☁️)**:
 
 ```env
+PORT=8080
 MAX_URLS=42
 TIMEOUT_SECONDS=60
 AWS_S3_BUCKET=meu-bucket-super-secreto
@@ -206,10 +208,11 @@ Done! You now have a fresh binary in your folder.
 
 ### ⚙️ Fine Tuning (Configuration)
 
-Create a `.env` file and tweak the settings. Now with **AWS S3** support!
+Create a `.env` file and tweak the settings. Now with **AWS S3** and Port support!
 
 | Variable            | What does it do?                                 | Default |
 | :------------------ | :----------------------------------------------- | :------ |
+| `PORT`              | Server port (choose your lucky number).          | `8080`  |
 | `MAX_URLS`          | How many sites can you handle at once?           | `10`    |
 | `TIMEOUT_SECONDS`   | Time (in sec) before giving up if the net fails. | `60`    |
 | `AWS_S3_BUCKET`     | S3 Bucket name (for cloud riders).               | _Local_ |
@@ -220,6 +223,7 @@ Create a `.env` file and tweak the settings. Now with **AWS S3** support!
 **Example `.env` (Cloud Mode ☁️)**:
 
 ```env
+PORT=8080
 MAX_URLS=42
 TIMEOUT_SECONDS=60
 AWS_S3_BUCKET=my-super-secret-bucket

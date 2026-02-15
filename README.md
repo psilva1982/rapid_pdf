@@ -74,10 +74,11 @@ Agora você tem superpoderes via HTTP:
 
 ### ⚙️ Configuração
 
-Crie um arquivo `.env` para tunar seu RapidPDF. Agora com chaves do S3!
+Crie um arquivo `.env` para tunar seu RapidPDF. Agora com chaves do S3 e Porta customizável!
 
 | Variável            | Descrição                                              | Padrão    |
 | :------------------ | :----------------------------------------------------- | :-------- |
+| `PORT`              | Porta do servidor web superônico                       | `8080`    |
 | `MAX_URLS`          | Máximo de URLs permitidas por requisição               | `10`      |
 | `TIMEOUT_SECONDS`   | Tempo limite (em segundos) para renderizar cada página | `60`      |
 | `AWS_S3_BUCKET`     | Nome do seu balde (bucket) no S3 🪣                    | _(vazio)_ |
@@ -161,10 +162,11 @@ Now you have HTTP superpowers:
 
 ### ⚙️ Configuration
 
-Create a `.env` file to tune your RapidPDF. Now with S3 keys!
+Create a `.env` file to tune your RapidPDF. Now with S3 keys and custom Port!
 
 | Variable            | Description                                  | Default   |
 | :------------------ | :------------------------------------------- | :-------- |
+| `PORT`              | Server port (where the magic happens)        | `8080`    |
 | `MAX_URLS`          | Maximum URLs allowed per request             | `10`      |
 | `TIMEOUT_SECONDS`   | Timeout (in seconds) for rendering each page | `60`      |
 | `AWS_S3_BUCKET`     | Your S3 bucket name 🪣                       | _(empty)_ |
