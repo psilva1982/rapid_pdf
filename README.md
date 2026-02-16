@@ -72,6 +72,27 @@ Agora você tem superpoderes via HTTP:
 
 - **Documentação**: Acesse [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) e brinque com a API.
 
+#### 3. Modo Docker 🐳
+
+A maneira mais fácil de rodar sem instalar dependências!
+
+**Puxar e rodar do DockerHub:**
+
+```bash
+docker pull severos/rapid-pdf:latest
+docker run -d -p 8080:8080 -v $(pwd)/media:/app/media severos/rapid-pdf:latest
+```
+
+**Ou usar Docker Compose:**
+
+```bash
+docker-compose up -d
+```
+
+Pronto! Acesse `http://localhost:8080/swagger/index.html` para usar a API.
+
+📚 **Documentação completa**: Veja [DOCKER.md](DOCKER.md) para configurações avançadas, deployment em produção e troubleshooting.
+
 ### ⚙️ Configuração
 
 Crie um arquivo `.env` para tunar seu RapidPDF. Agora com chaves do S3 e Porta customizável!
@@ -159,6 +180,27 @@ Now you have HTTP superpowers:
   _(Or `/media/file.pdf` if running locally)_
 
 - **Documentation**: Go to [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) and play with the API.
+
+#### 3. Docker Mode 🐳
+
+The easiest way to run without installing dependencies!
+
+**Pull and run from DockerHub:**
+
+```bash
+docker pull severos/rapid-pdf:latest
+docker run -d -p 8080:8080 -v $(pwd)/media:/app/media severos/rapid-pdf:latest
+```
+
+**Or use Docker Compose:**
+
+```bash
+docker-compose up -d
+```
+
+Done! Go to `http://localhost:8080/swagger/index.html` to use the API.
+
+📚 **Full Documentation**: See [DOCKER.md](DOCKER.md) for advanced configuration, production deployment, and troubleshooting.
 
 ### ⚙️ Configuration
 
