@@ -1,0 +1,43 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Documentation (except root README)
+*.md
+!README.md
+
+# Build outputs
+media/
+*.pdf
+output.pdf
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+*_test.go
+testdata/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker files (avoid recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore

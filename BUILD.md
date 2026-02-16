@@ -43,6 +43,15 @@ Antes de começar a brincadeira, você precisa ter:
 
 Quer criar um executável para levar pra casa?
 
+**Passo 0: Gere a documentação (Swagger)**
+Se você mexeu na API, rode isso antes ou o compilador vai chorar:
+
+```bash
+swag init
+```
+
+**Passo 1: Compile**
+
 **Linux / macOS:**
 
 ```bash
@@ -59,36 +68,52 @@ Pronto! Agora você tem um binário fresquinho na pasta.
 
 ### 🚀 Decolando (Execução)
 
-**Modo "Tô com pressa" (Dev):**
+**Modo "API Server" (Padrão):**
 
 ```bash
-go run main.go https://exemplo.com.br
+# Roda na porta 8080
+./rapid_pdf
 ```
 
-**Modo "Profissional" (Binário):**
+**Modo "CLI One-Shot" (Clássico):**
 
 ```bash
-# Linux/Mac
+# Converte e sai
 ./rapid_pdf https://exemplo.com.br
-
-# Windows
-.\rapid_pdf.exe https://exemplo.com.br
 ```
 
 ### ⚙️ Ajustes Finos (Configuração)
 
-Crie um arquivo `.env` e mande ver nas configs:
+Crie um arquivo `.env` e mande ver nas configs. Agora com suporte a **AWS S3** e Porta!
 
-| Variável   | O que faz?                                       | Padrão |
-| :--------- | :----------------------------------------------- | :----- |
-| `MAX_URLS` | Quantos sites você aguenta converter de uma vez? | `10`   |
-| `TIMEOUT`  | Tempo (em seg) antes de desistir se a net cair.  | `30`   |
+| Variável            | O que faz?                                       | Padrão  |
+| :------------------ | :----------------------------------------------- | :------ |
+| `PORT`              | Porta onde o servidor vai rodar.                 | `8080`  |
+| `MAX_URLS`          | Quantos sites você aguenta converter de uma vez? | `10`    |
+| `TIMEOUT_SECONDS`   | Tempo (em seg) antes de desistir se a net cair.  | `60`    |
+| `AWS_S3_BUCKET`     | Nome do Bucket no S3 (pra quem manda pra nuvem). | _Local_ |
+| `AWS_S3_REGION`     | Região da AWS (tipo `us-east-1`).                | _Local_ |
+| `AWS_S3_ACCESS_KEY` | Chave de acesso (shhh, segredo).                 | _Local_ |
+| `AWS_S3_SECRET_KEY` | Chave secreta (não poste no Instagram).          | _Local_ |
 
-**Exemplo `.env`**:
+**Exemplo `.env` (Modo Nuvem ☁️)**:
 
 ```env
+PORT=8080
 MAX_URLS=42
-TIMEOUT=60
+TIMEOUT_SECONDS=60
+AWS_S3_BUCKET=meu-bucket-super-secreto
+AWS_S3_REGION=us-east-1
+AWS_S3_ACCESS_KEY=AKIA...
+AWS_S3_SECRET_KEY=ABC123...
+```
+
+**Exemplo `.env` (Modo Local 🏠)**:
+
+```env
+MAX_URLS=10
+TIMEOUT_SECONDS=60
+# Deixe as vars da AWS comentadas ou vazias!
 ```
 
 ### 🧪 Testando Tudo
@@ -101,11 +126,13 @@ go test -v ./...
 
 ### ❌ Deu Ruim? (Troubleshooting)
 
-| Problema                    | Possível Causa    | Solução                               |
-| :-------------------------- | :---------------- | :------------------------------------ |
-| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.          |
-| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT` ou checa o Wi-Fi. |
-| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.       |
+| Problema                    | Possível Causa    | Solução                                        |
+| :-------------------------- | :---------------- | :--------------------------------------------- |
+| `executable file not found` | Cadê o Chrome?    | Instala o Chrome aí, chefia.                   |
+| `context deadline exceeded` | Internet discada? | Aumenta o `TIMEOUT_SECONDS` ou checa o Wi-Fi.  |
+| `too many URLs`             | Calma, jovem!     | Aumenta o `MAX_URLS` no `.env`.                |
+| `docs package not found`    | Esqueceu o swag?  | Roda `swag init` antes do build!               |
+| `failed to upload to S3`    | Credenciais fake? | Checa se as chaves AWS estão certas no `.env`. |
 
 ---
 
@@ -119,6 +146,7 @@ Before joining the party, make sure you have:
   - [Download Go](https://go.dev/dl/)
 - **Google Chrome** (or Chromium): The engine of our Ferrari.
   - The app tries to find it automagically.
+- **Swag CLI**: For generating docs. `go install github.com/swaggo/swag/cmd/swag@latest`.
 - **Git**: To get the code painlessly.
 
 ### 🛠️ Flash Installation
@@ -139,6 +167,15 @@ Before joining the party, make sure you have:
 
 Want a standalone executable to take home?
 
+**Step 0: Generate Docs**
+Don't skip this or the build will fail:
+
+```bash
+swag init
+```
+
+**Step 1: Compile**
+
 **Linux / macOS:**
 
 ```bash
@@ -155,36 +192,52 @@ Done! You now have a fresh binary in your folder.
 
 ### 🚀 Liftoff (Running)
 
-**"I'm in a hurry" Mode (Dev):**
+**"API Server" Mode (Default):**
 
 ```bash
-go run main.go https://example.com
+# Listens on :8080
+./rapid_pdf
 ```
 
-**"Pro" Mode (Binary):**
+**"CLI One-Shot" Mode (Classic):**
 
 ```bash
-# Linux/Mac
+# Converts and exits
 ./rapid_pdf https://example.com
-
-# Windows
-.\rapid_pdf.exe https://example.com
 ```
 
 ### ⚙️ Fine Tuning (Configuration)
 
-Create a `.env` file and tweak the settings:
+Create a `.env` file and tweak the settings. Now with **AWS S3** and Port support!
 
-| Variable   | What does it do?                                 | Default |
-| :--------- | :----------------------------------------------- | :------ |
-| `MAX_URLS` | How many sites can you handle at once?           | `10`    |
-| `TIMEOUT`  | Time (in sec) before giving up if the net fails. | `30`    |
+| Variable            | What does it do?                                 | Default |
+| :------------------ | :----------------------------------------------- | :------ |
+| `PORT`              | Server port (choose your lucky number).          | `8080`  |
+| `MAX_URLS`          | How many sites can you handle at once?           | `10`    |
+| `TIMEOUT_SECONDS`   | Time (in sec) before giving up if the net fails. | `60`    |
+| `AWS_S3_BUCKET`     | S3 Bucket name (for cloud riders).               | _Local_ |
+| `AWS_S3_REGION`     | AWS Region (e.g. `us-east-1`).                   | _Local_ |
+| `AWS_S3_ACCESS_KEY` | Access Key (shhh, it's a secret).                | _Local_ |
+| `AWS_S3_SECRET_KEY` | Secret Key (don't post on Instagram).            | _Local_ |
 
-**Example `.env`**:
+**Example `.env` (Cloud Mode ☁️)**:
 
 ```env
+PORT=8080
 MAX_URLS=42
-TIMEOUT=60
+TIMEOUT_SECONDS=60
+AWS_S3_BUCKET=my-super-secret-bucket
+AWS_S3_REGION=us-east-1
+AWS_S3_ACCESS_KEY=AKIA...
+AWS_S3_SECRET_KEY=ABC123...
+```
+
+**Example `.env` (Local Mode 🏠)**:
+
+```env
+MAX_URLS=10
+TIMEOUT_SECONDS=60
+# Leave AWS vars commented out or empty!
 ```
 
 ### 🧪 Testing Everything
@@ -197,11 +250,13 @@ go test -v ./...
 
 ### ❌ Oops? (Troubleshooting)
 
-| Issue                       | Possible Cause      | Solution                           |
-| :-------------------------- | :------------------ | :--------------------------------- |
-| `executable file not found` | Where is Chrome?    | Install Chrome, boss.              |
-| `context deadline exceeded` | Dial-up internet?   | Increase `TIMEOUT` or check Wi-Fi. |
-| `too many URLs`             | Easy there, cowboy! | Increase `MAX_URLS` in `.env`.     |
+| Issue                       | Possible Cause      | Solution                                   |
+| :-------------------------- | :------------------ | :----------------------------------------- |
+| `executable file not found` | Where is Chrome?    | Install Chrome, boss.                      |
+| `context deadline exceeded` | Dial-up internet?   | Increase `TIMEOUT_SECONDS` or check Wi-Fi. |
+| `too many URLs`             | Easy there, cowboy! | Increase `MAX_URLS` in `.env`.             |
+| `docs package not found`    | Forgot swag?        | Run `swag init` before build!              |
+| `failed to upload to S3`    | Fake credentials?   | Double-check your AWS keys in `.env`.      |
 
 ---
 

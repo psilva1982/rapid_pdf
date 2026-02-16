@@ -9,12 +9,33 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	_ "github.com/psilva1982/rapid_pdf/docs"
+	"github.com/psilva1982/rapid_pdf/internal/api"
 	"github.com/psilva1982/rapid_pdf/internal/config"
 	"github.com/psilva1982/rapid_pdf/internal/converter"
 	"github.com/psilva1982/rapid_pdf/internal/merger"
+	"github.com/psilva1982/rapid_pdf/internal/storage"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 const defaultOutputFile = "output.pdf"
+
+// @title           RapidPDF API
+// @version         1.0
+// @description     Efficient Web-to-PDF Converter API.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /
 
 func main() {
 	// Set up structured logging.
@@ -32,21 +53,45 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Parse URL arguments.
-	urls := os.Args[1:]
-	if len(urls) == 0 {
-		fmt.Println()
-		fmt.Println("Usage: rapid_pdf <url1> <url2> ... <urlN>")
-		fmt.Println()
-		fmt.Printf("  Converts up to %d web pages into a single PDF.\n", cfg.MaxURLs)
-		fmt.Printf("  Configure MAX_URLS in .env to change the limit.\n")
-		fmt.Println()
-		fmt.Println("Example:")
-		fmt.Println("  rapid_pdf https://go.dev https://example.com")
-		fmt.Println()
-		os.Exit(0)
+	// Check if running in CLI mode (arguments provided) or Server mode (no arguments)
+	args := os.Args[1:]
+	if len(args) == 0 {
+		runServer(cfg)
+	} else {
+		runCLI(cfg, args)
+	}
+}
+
+func runServer(cfg *config.Config) {
+	slog.Info("Starting server mode", "port", cfg.Port)
+
+	// Initialize storage backend (S3 or local based on config).
+	store, err := storage.New(cfg)
+	if err != nil {
+		slog.Error("failed to initialize storage", "error", err)
+		os.Exit(1)
 	}
 
+	// Initialize API handler with configuration and storage.
+	handler := api.NewHandler(cfg, store)
+
+	r := gin.Default()
+
+	// Serve local media files when using local storage.
+	if !cfg.IsS3Configured() {
+		r.Static("/media", "./media")
+	}
+
+	r.POST("/generate", handler.GeneratePDF)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	if err := r.Run(":" + cfg.Port); err != nil {
+		slog.Error("server failed to start", "error", err)
+		os.Exit(1)
+	}
+}
+
+func runCLI(cfg *config.Config, urls []string) {
 	// Validate number of URLs.
 	if len(urls) > cfg.MaxURLs {
 		slog.Error("too many URLs provided",
@@ -81,7 +126,8 @@ func main() {
 	fmt.Printf("📄 Converting %d %s to PDF...\n", len(urls), pluralize(len(urls), "page", "pages"))
 	fmt.Println(strings.Repeat("─", 50))
 
-	pdfFiles, err := converter.ConvertAll(ctx, urls)
+	timeout := time.Duration(cfg.TimeoutSeconds) * time.Second
+	pdfFiles, err := converter.ConvertAll(ctx, urls, timeout)
 	if err != nil {
 		slog.Error("conversion failed", "error", err)
 		merger.Cleanup(pdfFiles) // Clean up any partial results.
