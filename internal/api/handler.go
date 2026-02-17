@@ -96,7 +96,8 @@ func (h *Handler) GeneratePDF(c *gin.Context) {
 
 	// 1. Convert all URLs to individual PDFs
 	timeout := time.Duration(h.Config.TimeoutSeconds) * time.Second
-	pdfFiles, err := converter.ConvertAll(ctx, req.URLs, timeout)
+	waitDelay := time.Duration(h.Config.PageLoadWaitSeconds) * time.Second
+	pdfFiles, err := converter.ConvertAll(ctx, req.URLs, timeout, waitDelay)
 	if err != nil {
 		slog.Error("conversion failed", "error", err)
 		// Cleanup any partial files

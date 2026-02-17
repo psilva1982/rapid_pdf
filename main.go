@@ -127,7 +127,8 @@ func runCLI(cfg *config.Config, urls []string) {
 	fmt.Println(strings.Repeat("─", 50))
 
 	timeout := time.Duration(cfg.TimeoutSeconds) * time.Second
-	pdfFiles, err := converter.ConvertAll(ctx, urls, timeout)
+	waitDelay := time.Duration(cfg.PageLoadWaitSeconds) * time.Second
+	pdfFiles, err := converter.ConvertAll(ctx, urls, timeout, waitDelay)
 	if err != nil {
 		slog.Error("conversion failed", "error", err)
 		merger.Cleanup(pdfFiles) // Clean up any partial results.

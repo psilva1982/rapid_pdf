@@ -15,9 +15,10 @@ const (
 
 // Config holds the application configuration.
 type Config struct {
-	MaxURLs        int
-	TimeoutSeconds int
-	Port           string
+	MaxURLs             int
+	TimeoutSeconds      int
+	PageLoadWaitSeconds int
+	Port                string
 
 	// S3 storage configuration (optional — if empty, files are saved locally).
 	S3Bucket    string
@@ -67,13 +68,26 @@ func Load() (*Config, error) {
 		timeoutSeconds = parsed
 	}
 
+	pageLoadWaitSeconds := 5
+	if v := os.Getenv("PAGE_LOAD_WAIT_SECONDS"); v != "" {
+		parsed, err := strconv.Atoi(v)
+		if err != nil {
+			return nil, fmt.Errorf("PAGE_LOAD_WAIT_SECONDS must be a valid integer: %w", err)
+		}
+		if parsed < 0 {
+			return nil, fmt.Errorf("PAGE_LOAD_WAIT_SECONDS must be non-negative, got %d", parsed)
+		}
+		pageLoadWaitSeconds = parsed
+	}
+
 	return &Config{
-		MaxURLs:        maxURLs,
-		TimeoutSeconds: timeoutSeconds,
-		Port:           port,
-		S3Bucket:       os.Getenv("AWS_S3_BUCKET"),
-		S3Region:       os.Getenv("AWS_S3_REGION"),
-		S3AccessKey:    os.Getenv("AWS_S3_ACCESS_KEY"),
-		S3SecretKey:    os.Getenv("AWS_S3_SECRET_KEY"),
+		MaxURLs:             maxURLs,
+		TimeoutSeconds:      timeoutSeconds,
+		PageLoadWaitSeconds: pageLoadWaitSeconds,
+		Port:                port,
+		S3Bucket:            os.Getenv("AWS_S3_BUCKET"),
+		S3Region:            os.Getenv("AWS_S3_REGION"),
+		S3AccessKey:         os.Getenv("AWS_S3_ACCESS_KEY"),
+		S3SecretKey:         os.Getenv("AWS_S3_SECRET_KEY"),
 	}, nil
 }

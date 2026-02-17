@@ -14,7 +14,7 @@ import (
 
 // ConvertURLToPDF navigates to the given URL using a headless Chrome browser,
 // waits for the page to fully load, and saves the rendered page as a PDF.
-func ConvertURLToPDF(ctx context.Context, url, outputPath string, timeout time.Duration) error {
+func ConvertURLToPDF(ctx context.Context, url, outputPath string, timeout time.Duration, waitDelay time.Duration) error {
 	slog.Info("converting URL to PDF", "url", url, "output", outputPath)
 
 	// Create a timeout context for this individual page conversion.
@@ -27,24 +27,14 @@ func ConvertURLToPDF(ctx context.Context, url, outputPath string, timeout time.D
 		// Wait for the body to be visible (page loaded).
 		chromedp.WaitVisible("body", chromedp.ByQuery),
 		// Small delay to let async content settle.
-		chromedp.Sleep(2*time.Second),
+		chromedp.Sleep(waitDelay),
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			var err error
 			buf, _, err = page.PrintToPDF().
 				WithPrintBackground(true).
 				WithDisplayHeaderFooter(false).
-				// WithHeaderTemplate(fmt.Sprintf(
-				// 	`<div style="font-size:8px; width:100%%; text-align:center; color:#888;">%s</div>`, url)).
-				// WithFooterTemplate(
-				// 	`<div style="font-size:8px; width:100%; text-align:center; color:#888;">
-				// 		Página <span class="pageNumber"></span> de <span class="totalPages"></span>
-				// 	</div>`).
 				WithPaperWidth(8.27).   // A4 width in inches
 				WithPaperHeight(11.69). // A4 height in inches
-				// WithMarginTop(0.6).
-				// WithMarginBottom(0.6).
-				// WithMarginLeft(0.4).
-				// WithMarginRight(0.4).
 				Do(ctx)
 			return err
 		}),
@@ -64,7 +54,7 @@ func ConvertURLToPDF(ctx context.Context, url, outputPath string, timeout time.D
 // ConvertAll processes a slice of URLs and generates a temporary PDF file for
 // each one. It returns the list of generated PDF file paths. The caller is
 // responsible for cleaning up the temporary files.
-func ConvertAll(ctx context.Context, urls []string, timeout time.Duration) ([]string, error) {
+func ConvertAll(ctx context.Context, urls []string, timeout time.Duration, waitDelay time.Duration) ([]string, error) {
 	// Create a temporary directory for intermediate PDFs.
 	tmpDir, err := os.MkdirTemp("", "rapid_pdf_*")
 	if err != nil {
@@ -93,7 +83,7 @@ func ConvertAll(ctx context.Context, urls []string, timeout time.Duration) ([]st
 
 		outputPath := filepath.Join(tmpDir, fmt.Sprintf("page_%03d.pdf", i+1))
 
-		if err := ConvertURLToPDF(taskCtx, url, outputPath, timeout); err != nil {
+		if err := ConvertURLToPDF(taskCtx, url, outputPath, timeout, waitDelay); err != nil {
 			taskCancel()
 			slog.Error("failed to convert URL", "url", url, "error", err)
 			return pdfPaths, fmt.Errorf("error on URL #%d (%s): %w", i+1, url, err)

@@ -97,15 +97,16 @@ Pronto! Acesse `http://localhost:8080/swagger/index.html` para usar a API.
 
 Crie um arquivo `.env` para tunar seu RapidPDF. Agora com chaves do S3 e Porta customizável!
 
-| Variável            | Descrição                                              | Padrão    |
-| :------------------ | :----------------------------------------------------- | :-------- |
-| `PORT`              | Porta do servidor web superônico                       | `8080`    |
-| `MAX_URLS`          | Máximo de URLs permitidas por requisição               | `10`      |
-| `TIMEOUT_SECONDS`   | Tempo limite (em segundos) para renderizar cada página | `60`      |
-| `AWS_S3_BUCKET`     | Nome do seu balde (bucket) no S3 🪣                    | _(vazio)_ |
-| `AWS_S3_REGION`     | Região da AWS (ex: `us-east-1`)                        | _(vazio)_ |
-| `AWS_S3_ACCESS_KEY` | Sua chave de acesso AWS 🔑                             | _(vazio)_ |
-| `AWS_S3_SECRET_KEY` | Seu segredo AWS 🤫                                     | _(vazio)_ |
+| Variável                 | Descrição                                                 | Padrão    |
+| :----------------------- | :-------------------------------------------------------- | :-------- |
+| `PORT`                   | Porta do servidor web superônico                          | `8080`    |
+| `MAX_URLS`               | Máximo de URLs permitidas por requisição                  | `10`      |
+| `TIMEOUT_SECONDS`        | Tempo limite (em segundos) para renderizar cada página    | `60`      |
+| `PAGE_LOAD_WAIT_SECONDS` | Tempo de espera (em segundos) após carregamento da página | `5`       |
+| `AWS_S3_BUCKET`          | Nome do seu balde (bucket) no S3 🪣                       | _(vazio)_ |
+| `AWS_S3_REGION`          | Região da AWS (ex: `us-east-1`)                           | _(vazio)_ |
+| `AWS_S3_ACCESS_KEY`      | Sua chave de acesso AWS 🔑                                | _(vazio)_ |
+| `AWS_S3_SECRET_KEY`      | Seu segredo AWS 🤫                                        | _(vazio)_ |
 
 > **Dica de Mestre**: Se não preencher as variáveis da AWS, o RapidPDF assume o modo "Hacker de Garagem" e salva tudo na pasta `./media`.
 
@@ -206,15 +207,16 @@ Done! Go to `http://localhost:8080/swagger/index.html` to use the API.
 
 Create a `.env` file to tune your RapidPDF. Now with S3 keys and custom Port!
 
-| Variable            | Description                                  | Default   |
-| :------------------ | :------------------------------------------- | :-------- |
-| `PORT`              | Server port (where the magic happens)        | `8080`    |
-| `MAX_URLS`          | Maximum URLs allowed per request             | `10`      |
-| `TIMEOUT_SECONDS`   | Timeout (in seconds) for rendering each page | `60`      |
-| `AWS_S3_BUCKET`     | Your S3 bucket name 🪣                       | _(empty)_ |
-| `AWS_S3_REGION`     | AWS Region (e.g., `us-east-1`)               | _(empty)_ |
-| `AWS_S3_ACCESS_KEY` | Your AWS Access Key 🔑                       | _(empty)_ |
-| `AWS_S3_SECRET_KEY` | Your AWS Secret Key 🤫                       | _(empty)_ |
+| Variable                 | Description                                  | Default   |
+| :----------------------- | :------------------------------------------- | :-------- |
+| `PORT`                   | Server port (where the magic happens)        | `8080`    |
+| `MAX_URLS`               | Maximum URLs allowed per request             | `10`      |
+| `TIMEOUT_SECONDS`        | Timeout (in seconds) for rendering each page | `60`      |
+| `PAGE_LOAD_WAIT_SECONDS` | Wait time (in seconds) after page load       | `5`       |
+| `AWS_S3_BUCKET`          | Your S3 bucket name 🪣                       | _(empty)_ |
+| `AWS_S3_REGION`          | AWS Region (e.g., `us-east-1`)               | _(empty)_ |
+| `AWS_S3_ACCESS_KEY`      | Your AWS Access Key 🔑                       | _(empty)_ |
+| `AWS_S3_SECRET_KEY`      | Your AWS Secret Key 🤫                       | _(empty)_ |
 
 > **Pro Tip**: If you leave the AWS variables empty, RapidPDF goes into "Garage Hacker" mode and saves everything to the `./media` folder.
 
